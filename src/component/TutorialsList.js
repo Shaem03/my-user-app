@@ -4,7 +4,6 @@ import { useTable } from "react-table";
 
 const TutorialsList = (props) => {
     const [tutorials, setTutorials] = useState([]);
-    const [searchTitle, setSearchTitle] = useState("");
     const tutorialsRef = useRef();
 
     tutorialsRef.current = tutorials;
@@ -13,45 +12,28 @@ const TutorialsList = (props) => {
         retrieveTutorials();
     }, []);
 
-    const onChangeSearchTitle = (e) => {
-        const searchTitle = e.target.value;
-        setSearchTitle(searchTitle);
-    };
 
     const retrieveTutorials = () => {
         TutorialDataService.getAll()
             .then((response) => {
-                setTutorials(response.data);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
+                var sdsad =[ {
+                    "title": "ASdasd",
+                    "username": "ajshbdjashd",
+                    "content": "Asdasd"
+                }]
 
-    const refreshList = () => {
-        retrieveTutorials();
-    };
-
-    const removeAllTutorials = () => {
-        TutorialDataService.removeAll()
-            .then((response) => {
+                    // '<tr' +
+                    // '<td>sdadad</td>' +
+                    // '</tr>'
                 console.log(response.data);
-                refreshList();
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
 
-    const findByTitle = () => {
-        TutorialDataService.findByTitle(searchTitle)
-            .then((response) => {
                 setTutorials(response.data);
             })
             .catch((e) => {
                 console.log(e);
             });
     };
+
 
     const openTutorial = (rowIndex) => {
         const id = tutorialsRef.current[rowIndex].id;
@@ -59,22 +41,6 @@ const TutorialsList = (props) => {
         props.history.push("/tutorials/" + id);
     };
 
-    const deleteTutorial = (rowIndex) => {
-        const id = tutorialsRef.current[rowIndex].id;
-
-        TutorialDataService.remove(id)
-            .then((response) => {
-                props.history.push("/tutorials");
-
-                let newTutorials = [...tutorialsRef.current];
-                newTutorials.splice(rowIndex, 1);
-
-                setTutorials(newTutorials);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
 
     const columns = useMemo(
         () => [
@@ -83,33 +49,12 @@ const TutorialsList = (props) => {
                 accessor: "title",
             },
             {
-                Header: "Description",
-                accessor: "description",
+                Header: "Username",
+                accessor: "username",
             },
             {
-                Header: "Status",
-                accessor: "published",
-                Cell: (props) => {
-                    return props.value ? "Published" : "Pending";
-                },
-            },
-            {
-                Header: "Actions",
-                accessor: "actions",
-                Cell: (props) => {
-                    const rowIdx = props.row.id;
-                    return (
-                        <div>
-              <span onClick={() => openTutorial(rowIdx)}>
-                <i className="far fa-edit action mr-2"></i>
-              </span>
-
-                            <span onClick={() => deleteTutorial(rowIdx)}>
-                <i className="fas fa-trash action"></i>
-              </span>
-                        </div>
-                    );
-                },
+                Header: "Content",
+                accessor: "content",
             },
         ],
         []
@@ -134,20 +79,18 @@ const TutorialsList = (props) => {
                         type="text"
                         className="form-control"
                         placeholder="Search by title"
-                        value={searchTitle}
-                        onChange={onChangeSearchTitle}
                     />
                     <div className="input-group-append">
                         <button
                             className="btn btn-outline-secondary"
                             type="button"
-                            onClick={findByTitle}
                         >
                             Search
                         </button>
                     </div>
                 </div>
             </div>
+
             <div className="col-md-12 list">
                 <table
                     className="table table-striped table-bordered"
@@ -179,12 +122,6 @@ const TutorialsList = (props) => {
                     })}
                     </tbody>
                 </table>
-            </div>
-
-            <div className="col-md-8">
-                <button className="btn btn-sm btn-danger" onClick={removeAllTutorials}>
-                    Remove All
-                </button>
             </div>
         </div>
     );
